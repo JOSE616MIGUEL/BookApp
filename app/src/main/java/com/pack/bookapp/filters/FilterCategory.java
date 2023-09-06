@@ -1,0 +1,50 @@
+package com.pack.bookapp.filters;
+
+import android.widget.Filter;
+
+import com.pack.bookapp.adapters.AdapterCategory;
+import com.pack.bookapp.models.ModelCategory;
+
+import java.util.ArrayList;
+
+public class FilterCategory extends Filter {
+    ArrayList<ModelCategory> filterList;
+
+    AdapterCategory adapterCategory;
+
+    public FilterCategory(ArrayList<ModelCategory> filterList, AdapterCategory adapterCategory) {
+        this.filterList = filterList;
+        this.adapterCategory = adapterCategory;
+    }
+
+    protected FilterResults performFiltering(CharSequence constraint){
+        FilterResults results = new FilterResults();
+
+        if (constraint != null && constraint.length() > 0){
+            constraint = constraint.toString().toUpperCase();
+            ArrayList<ModelCategory> filteredModel = new ArrayList<>();
+
+            for (int i=0; i<filterList.size(); i++){
+                if (filterList.get(i).getCategory().toUpperCase().contains(constraint)){
+                    filteredModel.add(filterList.get(i));
+                }
+            }
+
+            results.count = filteredModel.size();
+            results.values = filteredModel;
+
+        }
+        else {
+            results.count = filterList.size();
+            results.values = filterList;
+        }
+        return results;
+    }
+
+    protected void publishResults(CharSequence constraint, FilterResults results){
+        adapterCategory.categoryArrayList = (ArrayList<ModelCategory>)results.values;
+        adapterCategory.notifyDataSetChanged();
+
+
+    }
+}
